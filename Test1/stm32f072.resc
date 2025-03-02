@@ -1,0 +1,23 @@
+:name: STM32F072 FW test
+:description: Allows to debug the fw on emulated HW
+
+$name?="STM32F072"
+$bin_path?="{PATHTOELF}/Test1.elf"
+
+# Create Machine & Load config
+mach create $name
+machine LoadPlatformDescription @platforms/boards/stm32f072b_discovery.repl
+
+
+# Create a terminal window showing the output of UART1
+showAnalyzer sysbus.usart1
+
+# Enable GDB
+machine StartGdbServer 3333
+
+macro reset
+"""
+    sysbus LoadELF $bin_path
+"""
+
+runMacro $reset
